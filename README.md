@@ -4,23 +4,35 @@ This application is to practice usage [Moildev library](https://github.com/MoilO
 
 1. Clone this repository
 
-```
-$ git clone https://github.com/anto112/moil-demo-apps.git
-```
+   you can directly download the zip file from this [link](https://github.com/MoilOrg/Demo-Apps-Moildev) 
 
-2. Install requirement following this command:
+   or using git command:
 
-```
-$ pip install -r requirements.txt
-```
+   ```
+   $ git clone https://github.com/MoilOrg/Demo-Apps-Moildev.git
+   ```
+
+2. Go to directory
+
+   ```
+   $ cd Demo-Apps-Moildev
+   ```
+
+3. Install requirement following this command:
+
+   ```
+   $ pip install -r requirements.txt
+   ```
 
 3. Run the apps:
 
-```
-$ python main.py
-```
+   ```
+   $ python src/main.py
+   ```
 
-**Example:**
+   
+
+**Example Result:**
 
 - **Anypoint**
 

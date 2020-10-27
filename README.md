@@ -1,6 +1,6 @@
 ## Moil-Demo Apps
 
-This application is to practice usage [Moildev library](https://github.com/MoilOrg/moildev) in advanced fisheye image processing.
+This application is to practice usage [Moildev library](https://github.com/MoilOrg/moildev) in advanced fisheye image processing. The GUI with dynamic size with keep ratio of the image. following branch anto112, the step to running this application is here:
 
 1. Clone this repository
 
@@ -9,7 +9,7 @@ This application is to practice usage [Moildev library](https://github.com/MoilO
    or using git command:
 
    ```
-   $ git clone https://github.com/MoilOrg/Demo-Apps-Moildev.git
+   $ git clone https://github.com/MoilOrg/Demo-Apps-Moildev.git --branch=anto112
    ```
 
 2. Go to directory
@@ -36,7 +36,7 @@ This application is to practice usage [Moildev library](https://github.com/MoilO
 
 - **Anypoint**
 
-  - mode-1
+  - mode-2
 
     ![](./Readme/1.png)
 
@@ -50,3 +50,4 @@ This application is to practice usage [Moildev library](https://github.com/MoilO
 
 ![](./Readme/2.png)
 
+***--Thank you--***

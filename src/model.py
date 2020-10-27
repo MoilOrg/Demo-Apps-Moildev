@@ -41,7 +41,6 @@ class model(QtWidgets.QMainWindow):
     def connect_event(self):
         self.ui.actionExit.triggered.connect(self.onclick_exit)
         self.ui.actionAbout_Us.triggered.connect(self.onclick_aboutUs)
-        # self.ui.open_image.clicked.connect(self.open_image)
         self.ui.normal_view.clicked.connect(self.normal_view)
         self.ui.rotate_left.clicked.connect(self.rotate_left)
         self.ui.rotate_right.clicked.connect(self.rotate_right)
@@ -141,7 +140,7 @@ class model(QtWidgets.QMainWindow):
     def load_param(self):
         """get parameter"""
         dialog = QtWidgets.QFileDialog()
-        options = dialog.DontResolveSymlinks | dialog.ShowDirsOnly
+        options = dialog.DontResolveSymlinks
         self.filename, _filter = dialog.getOpenFileName(dialog, 'Select Parameter',
                                                         filter="Image files (*.json *.txt)",
                                                         options=options)
@@ -153,7 +152,7 @@ class model(QtWidgets.QMainWindow):
 
     def open_image(self):
         dialog = QtWidgets.QFileDialog()
-        options = dialog.DontResolveSymlinks | dialog.ShowDirsOnly
+        options = dialog.DontResolveSymlinks
         self.filename, _filter = dialog.getOpenFileName(dialog, 'Select image',
                                                         filter="Image files (*.jpg *.png)",
                                                         options=options)

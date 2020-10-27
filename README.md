@@ -36,7 +36,7 @@ This application is to practice usage [Moildev library](https://github.com/MoilO
 
 - **Anypoint**
 
-  - mode-2
+  - Normal image
 
     ![](./Readme/1.png)
 

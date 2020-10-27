@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 from Moildev import Moildev
 from ConfigData import Config
-from image_resize import image_resize
 import datetime
 
 
@@ -42,7 +41,7 @@ class model(QtWidgets.QMainWindow):
     def connect_event(self):
         self.ui.actionExit.triggered.connect(self.onclick_exit)
         self.ui.actionAbout_Us.triggered.connect(self.onclick_aboutUs)
-        self.ui.open_image.clicked.connect(self.open_image)
+        # self.ui.open_image.clicked.connect(self.open_image)
         self.ui.normal_view.clicked.connect(self.normal_view)
         self.ui.rotate_left.clicked.connect(self.rotate_left)
         self.ui.rotate_right.clicked.connect(self.rotate_right)
@@ -75,7 +74,7 @@ class model(QtWidgets.QMainWindow):
         self.moildev = Moildev(self.camera, self.sensor_width, self.sensor_height, self.Icx, self.Icy, self.ratio,
                                self.imageWidth, self.imageHeight, self.parameter0, self.parameter1, self.parameter2,
                                self.parameter3, self.parameter4, self.parameter5, self.calibrationRatio)
-        self.ui.lineEdit.setText(str(self.camera))
+        # self.ui.lineEdit.setText(str(self.camera))
 
     def init_Map(self):
         self.h, self.w = self.image_ori.shape[:2]
@@ -104,17 +103,40 @@ class model(QtWidgets.QMainWindow):
             self.img = cv2.resize(self.img_any, (400, 300), interpolation=cv2.INTER_AREA)
         else:
             self.img = cv2.resize(self.image_ori, (400, 300), interpolation=cv2.INTER_AREA)
+
         my_label = self.ui.original_source
         image = QtGui.QImage(self.img.data, self.img.shape[1], self.img.shape[0],
                              QtGui.QImage.Format_RGB888).rgbSwapped()
-        my_label.setPixmap(QtGui.QPixmap.fromImage(image))
+
+        image = QtGui.QPixmap.fromImage(image).scaled(my_label.size(), aspectRatioMode=QtCore.Qt.KeepAspectRatio)
+        my_label.setPixmap(image)
+
+    def resizeEvent(self, event):
+        s = self.ui.widget_2
+        self.hi = s.frameGeometry().height()
+        self.ixi = round(self.hi * 1.333)
+        main_w = self.ui.Main_window
+        main_w.setGeometry(QtCore.QRect(0, 0, self.ixi, self.hi))
+        self.ui.label_4.setMinimumSize(QtCore.QSize(self.ixi-60, 30))
+
+        blue = QtGui.QPixmap(self.ixi, self.hi)
+        blue.fill(QtCore.Qt.transparent)
+        p = QtGui.QPainter(blue)
+        pen = QtGui.QPen(QtGui.QBrush(QtGui.QColor(238, 0, 236)), 1.5)
+        p.setPen(pen)
+        p.drawLine(round(self.ixi/2)-10, self.hi/2, round(self.ixi/2)+10, self.hi/2)
+        p.drawLine(round(self.ixi/2), (self.hi/2)-10, round(self.ixi/2), (self.hi/2)+10)
+        p.end()
+        self.ui.Plus_icon.setGeometry(QtCore.QRect(0, 0, self.ixi, self.hi))
+        self.ui.Plus_icon.setPixmap(blue)
 
     def view_result(self):
         main_w = self.ui.Main_window
         normal_image = QtGui.QImage(self.image_result.data, self.image_result.shape[1],
                                     self.image_result.shape[0],
                                     QtGui.QImage.Format_RGB888).rgbSwapped()
-        main_w.setPixmap(QtGui.QPixmap.fromImage(normal_image))
+        image = QtGui.QPixmap.fromImage(normal_image)
+        main_w.setPixmap(image)
 
     def load_param(self):
         """get parameter"""
@@ -138,15 +160,15 @@ class model(QtWidgets.QMainWindow):
         if len(self.filename) == 0:
             pass
         else:
-                self.image = cv2.imread(self.filename)
-                self.image_ori = self.image.copy()
-                self.view_original()
-                self.normal_view()
-                self.ui.normal_view.setChecked(True)
-                self.init_Map()
-                self.ui.original_source.mouseReleaseEvent = self.mouseRelease
-                self.ui.original_source.mouseDoubleClickEvent = self.mouseDoubleClick
-                self.ui.plus_icon.mouseDoubleClickEvent = self.mouseDoubleClick
+            self.image = cv2.imread(self.filename)
+            self.image_ori = self.image.copy()
+            self.view_original()
+            self.normal_view()
+            self.ui.normal_view.setChecked(True)
+            self.init_Map()
+            self.ui.original_source.mouseReleaseEvent = self.mouseRelease
+            self.ui.original_source.mouseDoubleClickEvent = self.mouseDoubleClick
+            # self.ui.plus_icon.mouseDoubleClickEvent = self.mouseDoubleClick
 
     def normal_view(self):
         self.anypoint = False
@@ -160,8 +182,8 @@ class model(QtWidgets.QMainWindow):
             self.view_original()
             self.disableRadio_any()
             self.ui.groupBox_4.hide()
-            self.result = self.image.copy()  # image after reconstruction center
-            self.image_result = image_resize(self.result, self.height)
+            self.image_result = self.image.copy()  # image after reconstruction center
+            # self.image_result = image_resize(self.result, self.height)
             self.view_result()
 
     def anypoint_view(self):
@@ -199,8 +221,8 @@ class model(QtWidgets.QMainWindow):
             self.beta = 360 if self.beta > 360 else self.beta
 
         self.moildev.AnyPointM(self.mapX, self.mapY, self.w, self.h, self.alpha, self.beta, self.zoom, self.m_ratio)
-        self.result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
-        self.image_result = image_resize(self.result, self.height)
+        self.image_result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
+        # self.image_result = image_resize(self.result, self.height)
         self.view_result()
 
     def show_anypoint_mode_2(self):
@@ -214,8 +236,8 @@ class model(QtWidgets.QMainWindow):
             self.beta = -90 if self.beta < -90 else self.beta
             self.beta = 90 if self.beta > 90 else self.beta
         self.moildev.AnyPointM2(self.mapX, self.mapY, self.w, self.h, self.alpha, self.beta, self.zoom, self.m_ratio)
-        self.result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
-        self.image_result = image_resize(self.result, self.height)
+        self.image_result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
+        # self.image_result = image_resize(self.result, self.height)
         self.view_result()
 
     def onclick_radio_mode1(self):
@@ -259,8 +281,8 @@ class model(QtWidgets.QMainWindow):
 
     def panorama(self):
         self.moildev.PanoramaM_Rt(self.mapX, self.mapY, self.w, self.h, self.m_ratio, self.max, self.alpha, self.beta)
-        self.result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
-        self.image_result = image_resize(self.result, self.height)
+        self.image_result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
+        # self.image_result = image_resize(self.result, self.height)
         self.view_result()
         self.ui.edit_max.setText(str(self.max))
         self.ui.edit_min.setText(str(self.min))
@@ -283,8 +305,8 @@ class model(QtWidgets.QMainWindow):
 
     def panoramaX(self):
         self.moildev.PanoramaX(self.mapX, self.mapY, self.w, self.h, self.m_ratio, self.max, self.min)
-        self.result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
-        self.image_result = image_resize(self.result, self.height)
+        self.image_result = cv2.remap(self.image_ori, self.mapX, self.mapY, cv2.INTER_CUBIC)
+        # self.image_result = image_resize(self.result, self.height)
         self.view_result()
         self.ui.edit_max.setText(str(self.max))
         self.ui.edit_min.setText(str(self.min))
@@ -313,10 +335,14 @@ class model(QtWidgets.QMainWindow):
         self.view_original()
 
     def polygon_anypoint(self):
-        X1 = [];  Y1 = []
-        X2 = [];  Y2 = []
-        X3 = [];  Y3 = []
-        X4 = [];  Y4 = []
+        X1 = [];
+        Y1 = []
+        X2 = [];
+        Y2 = []
+        X3 = [];
+        Y3 = []
+        X4 = [];
+        Y4 = []
 
         x = 0
         while x < self.w:
@@ -492,9 +518,13 @@ class model(QtWidgets.QMainWindow):
                 self.rotate_image()
 
     def rotate_image(self):
-        self.res = self.moildev.Rotate(self.w, self.h, self.result, self.angle)
-        self.image_result = image_resize(self.res, self.height)
-        self.view_result()
+        self.result = self.moildev.Rotate(self.w, self.h, self.image_result, self.angle)
+        # self.image_result = image_resize(self.res, self.height)
+        main_w = self.ui.Main_window
+        normal_image = QtGui.QImage(self.result.data, self.result.shape[1],
+                                    self.result.shape[0],
+                                    QtGui.QImage.Format_RGB888).rgbSwapped()
+        main_w.setPixmap(QtGui.QPixmap.fromImage(normal_image))
 
     def onclick_aboutUs(self):
         msgbox = QtWidgets.QMessageBox()
